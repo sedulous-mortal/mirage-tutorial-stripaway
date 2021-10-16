@@ -63,6 +63,32 @@ export default function () {
       });
   }
 
+  function updateBanner(id){
+    
+    setIsSavingBanner(true);
+
+    fetch(`/api/banners/${id}`, {
+       method: "PATCH"
+       })
+      .then((res) => res.json())
+      .then((json) => {
+        setBanners((banners) => banners);
+        setIsAddingBanner(false);
+      })
+      .catch((e) => {
+        setError("Your Banner wasn't saved. Try again.");
+        console.error(e);
+      })
+      .then(() => {
+        setIsSavingBanner(false);
+      })
+      .finally(() => {
+        fetch("/api/banners", {
+        method: "GET",
+        })
+      });
+  }
+
   function deleteBanner(id) {
     fetch(`/api/banners/${id}`, { method: "DELETE" });
     setBanners((banners) =>
@@ -178,6 +204,24 @@ export default function () {
                           <div>
                             {banner.bannerText}
                           </div>
+                          <button
+                            className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
+                            onClick={() => updateBanner(banner.id)}
+                            data-testid="update-banner"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="red"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                                fillRule="evenodd"
+                              ></path>
+                            </svg>
+                            ️
+                          </button>
                           <button
                             className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
                             onClick={() => deleteBanner(banner.id)}
