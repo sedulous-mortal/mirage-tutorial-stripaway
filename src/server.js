@@ -33,6 +33,9 @@ export default function () {
         });
       },
     routes() {
+        // base code had this.namespace set as 'api/banners', 
+        //but when I use that it ironically asks me in console if I forgot to declare namespace...
+        
       this.get("/api/banners", () => ({
         banners: [{
             bannerColor: 'blue',
