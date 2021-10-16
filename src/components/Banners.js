@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import EditModal from "./EditModal";
 
 export default function () {
 
@@ -8,6 +9,8 @@ export default function () {
   let [isAddingBanner, setIsAddingBanner] = useState();
   let [isSavingBanner, setIsSavingBanner] = useState();
   let [newBannerText, setNewBannerText] = useState("");
+  let [isEditingBanner, setIsEditingBanner] = useState();
+  let [bannerToEdit, setBannerToEdit] = useState({});
 
   useEffect(() => {
     let isCurrent = true;
@@ -98,6 +101,32 @@ export default function () {
       });
   }
 
+  function launchUpdateModal(bannerId){
+    console.log('launching modal')
+    setIsEditingBanner(true)
+    fetch(`/api/banners/${bannerId}`, {
+      method: "GET",
+      }).then((res) => res.json())
+      .then((json) => {
+        console.log('you clicked to edit this banner', json)
+        setBannerToEdit(json.banner);
+      })
+      .catch((e) => {
+        setError("Your Banner was saved but we couldn't get the updated banners");
+        console.error(e);
+      })
+    updateBanner(bannerId)
+    // style to add to modal
+    // position: fixed;
+    // left: 0;
+    // top: 0;
+    // width: 100%;
+    // height: 100%;
+    // overflow: auto;
+    // background-color: rgb(0,0,0);
+    // background-color: rgba(0,0,0,0.4);
+  }
+
   function deleteBanner(id) {
     fetch(`/api/banners/${id}`, { method: "DELETE" });
     setBanners((banners) =>
@@ -117,14 +146,10 @@ export default function () {
   return (
     <div className="flex justify-center">
       <div className="flex mx-auto overflow-hidden rounded-md shadow-lg">          
-
         <div className="flex flex-1 bg-white w-md">
-          
           <div className="flex-1 pt-12 pb-12 pr-12 pl-12">
             <div className="flex items-center justify-between mb-10">
-              <h1
-                className="flex items-center justify-between text-3xl font-bold leading-none"
-              >
+              <h1 className="flex items-center justify-between text-3xl font-bold leading-none">
                 Banners
               </h1>
 
@@ -213,9 +238,10 @@ export default function () {
                           <div>
                             {banner.bannerText}
                           </div>
+                          
                           <button
                             className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
-                            onClick={() => updateBanner(banner.id)}
+                            onClick={() => launchUpdateModal(banner.id)}
                             data-testid="update-banner"
                           >
                             <svg
@@ -253,6 +279,7 @@ export default function () {
                       ))}
                     </AnimatePresence>
                   </ul>
+                  
                 </div>
               ) : banners ? (
                 <p className="pt-3 pb-3 font-medium text-cool-gray-400">
@@ -263,6 +290,21 @@ export default function () {
                   Loading...
                 </p>
               ) : null}
+
+              {isEditingBanner && ( 
+                <EditModal />) 
+                // <EditModal banner={
+                //                 {
+                //                   bannerColor: 'red',
+                //                   bannerLink: 'https://codespark.com',
+                //                   bannerText: 'This is the awesome banner',
+                //                   bannerIcon: '',
+                //                   startDate: '2021-03-01T19:04:00.000Z',
+                //                   endDate: '2021-03-05T19:04:00.000Z'
+                //                 }
+                //               }
+                // />) 
+              }
 
               {isAddingBanner && (
                 <form
