@@ -8,25 +8,16 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function () {
   let history = useHistory();
   let location = useLocation();
-  let { listId } = useParams();
 
   let [banners, setBanners] = useState(null);
-  let [lists, setLists] = useState();
   let [error, setError] = useState();
   let [isAddingBanner, setIsAddingBanner] = useState();
   let [isSavingBanner, setIsSavingBanner] = useState();
-  let [isAddingList, setIsAddingList] = useState();
-  let [isSavingList, setIsSavingList] = useState();
   let [newBannerText, setNewBannerText] = useState("");
-  let [newListName, setNewListName] = useState("");
-  let [sidebarIsOpen, setSidebarIsOpen] = useQueryParam("open", BooleanParam);
-
-  let activeList = listId && lists?.find((list) => list.id === listId);
 
   useEffect(() => {
     let isCurrent = true;
     setBanners(null);
-    let url = listId ? `/api/lists/${listId}/banners` : `/api/banners`;
 
     fetch(url)
       .then((res) => res.json())
@@ -45,28 +36,7 @@ export default function () {
     return () => {
       isCurrent = false;
     };
-  }, [listId]);
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    if (sidebarIsOpen) {
-      fetch(`/api/lists`)
-        .then((res) => res.json())
-        .then((json) => {
-          if (isCurrent) {
-            setLists(json.lists);
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    }
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [sidebarIsOpen]);
+  });
 
   function createBanner(e) {
     e.preventDefault();
@@ -80,8 +50,7 @@ export default function () {
     fetch("/api/banners", {
       method: "POST",
       body: JSON.stringify({
-        text: newBannerText,
-        ...(listId && { listId }),
+        text: newBannerText
       }),
     })
       .then((res) => res.json())
@@ -99,47 +68,11 @@ export default function () {
       });
   }
 
-  function createList(e) {
-    e.preventDefault();
-
-    if (!newListName) {
-      return;
-    }
-
-    setIsSavingList(true);
-
-    fetch("/api/lists", {
-      method: "POST",
-      body: JSON.stringify({
-        name: newListName,
-      }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        setNewListName("");
-        setLists((lists) => [...lists, json.list]);
-        setIsAddingList(false);
-        history.push(`/${json.list.id}${location.search}`);
-      })
-      .catch(() => {
-        setError("Your List wasn't saved. Try again.");
-      })
-      .finally(() => {
-        setIsSavingList(false);
-      });
-  }
-
   function deleteBanner(id) {
     fetch(`/api/banners/${id}`, { method: "DELETE" });
     setBanners((banners) =>
       banners.filter((banner) => banner.id !== id)
     );
-  }
-
-  function deleteList() {
-    fetch(`/api/lists/${listId}`, { method: "DELETE" });
-    setLists((lists) => lists?.filter((list) => list.id !== listId));
-    history.push(`/${location.search}`);
   }
 
   let hasRenderedBannersRef = useRef(false);
@@ -153,119 +86,17 @@ export default function () {
 
   return (
     <div className="flex justify-center">
-      <div className="flex mx-auto overflow-hidden rounded-md shadow-lg">
-        <AnimatePresence initial={false}>
-          {sidebarIsOpen && (
-            <motion.div
-              animate={{ width: 192 }}
-              initial={{ width: 0 }}
-              exit={{ width: 0 }}
-              className="flex flex-col bg-cool-gray-800"
-            >
-              <div className="flex flex-col flex-1 w-48 pt-12 pb-4 bg-cool-gray-800">
-                <div className="flex-1">
-                  <div>
-                    <Link
-                      className="flex items-center justify-between px-6 py-2 text-sm font-medium"
-                      activeClassName="bg-cool-gray-700 text-white"
-                      inactiveClassName="text-cool-gray-400 hover:text-white"
-                      to={`/${location.search}`}
-                      exact
-                    >
-                      <span>All</span>
-                    </Link>
-
-                    {lists?.map((list) => (
-                      <Link
-                        key={list.id}
-                        className="flex items-center justify-between px-6 py-2 text-sm font-medium"
-                        activeClassName="bg-cool-gray-700 text-white"
-                        inactiveClassName="text-cool-gray-400 hover:text-white"
-                        to={`/${list.id}${location.search}`}
-                      >
-                        <span>{list.name}</span>
-                      </Link>
-                    ))}
-                  </div>
-
-                  {isAddingList && (
-                    <form
-                      onSubmit={createList}
-                      className={`${
-                        isSavingList ? "opacity-50 pointer-events-none" : ""
-                      }`}
-                    >
-                      <div className="relative">
-                        <input
-                          autoFocus
-                          value={newListName}
-                          onChange={(e) => setNewListName(e.target.value)}
-                          className="block w-full py-2 pl-6 text-sm font-medium text-white border-transparent rounded-none pr-9 focus:shadow-none form-input bg-cool-gray-700"
-                          type="text"
-                          placeholder="New list..."
-                          data-testid="new-list-text"
-                        />
-                        <button
-                          className="absolute inset-y-0 right-0 flex items-center px-3 text-cool-gray-400 hover:text-cool-gray-200"
-                          data-testid="save-new-list"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
-                <div className="mt-10">
-                  <button
-                    onClick={() => setIsAddingList(!isAddingList)}
-                    className="flex items-center mx-6 text-xs text-cool-gray-400 hover:text-white"
-                    data-testid="add-list"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      ></path>
-                    </svg>
-                    Add list
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <div className="flex mx-auto overflow-hidden rounded-md shadow-lg">          
 
         <div className="flex flex-1 bg-white w-md">
-          <div className="flex items-center w-12 group">
-            <button
-              onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
-              className="hidden w-2 h-10 ml-2 rounded-full bg-cool-gray-200 hover:bg-cool-gray-300 group-hover:block"
-              data-testid="toggle-sidebar"
-            ></button>
-          </div>
+          
 
           <div className="flex-1 pt-12 pb-12 pr-12">
             <div className="flex items-center justify-between mb-10">
               <h1
                 className="flex items-center justify-between text-3xl font-bold leading-none"
-                data-testid="active-list-title"
               >
-                {activeList?.name || "Banners"}
+                "Banners"
               </h1>
 
               <button
@@ -352,14 +183,6 @@ export default function () {
                         >
                           <div>
                             {banner.bannerText}
-                            {!listId && banner.list && (
-                              <span
-                                className="px-2 py-1 ml-3 text-xs font-medium rounded bg-cool-gray-100 text-cool-gray-600"
-                                data-testid="list-tag"
-                              >
-                                {banner.list.name}
-                              </span>
-                            )}
                           </div>
                           <button
                             className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
@@ -436,18 +259,6 @@ export default function () {
                 </form>
               )}
             </div>
-
-            {listId && (
-              <div className="mt-20 text-right">
-                <button
-                  onClick={deleteList}
-                  className="px-2 text-sm font-medium text-cool-gray-400 hover:text-cool-gray-600"
-                  data-testid="delete-list"
-                >
-                  Delete list
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
