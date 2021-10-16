@@ -1,5 +1,5 @@
 /*
-  This is the final solution for the Tutorial that fully implements the API for the Reminders app.
+  This is the final solution for the Tutorial that fully implements the API for the Banners app.
 */
 import {
   Model,
@@ -23,7 +23,7 @@ export default function ({ environment = "development" } = {}) {
 
     models: {
       list: Model.extend({
-        reminders: hasMany(),
+        banners: hasMany(),
       }),
 
       reminder: Model.extend({
@@ -37,9 +37,9 @@ export default function ({ environment = "development" } = {}) {
           return `List ${i}`;
         },
 
-        withReminders: trait({
+        withBanners: trait({
           afterCreate(list, server) {
-            if (!list.reminders.length) {
+            if (!list.banners.length) {
               server.createList("reminder", 5, { list });
             }
           },
@@ -60,12 +60,12 @@ export default function ({ environment = "development" } = {}) {
 
       server.create("list", {
         name: "Home",
-        reminders: [server.create("reminder", { text: "Do taxes" })],
+        banners: [server.create("reminder", { text: "Do taxes" })],
       });
 
       server.create("list", {
         name: "Work",
-        reminders: [server.create("reminder", { text: "Visit bank" })],
+        banners: [server.create("reminder", { text: "Visit bank" })],
       });
     },
 
@@ -74,20 +74,20 @@ export default function ({ environment = "development" } = {}) {
         return schema.lists.all();
       });
 
-      this.get("/api/lists/:id/reminders", (schema, request) => {
+      this.get("/api/lists/:id/banners", (schema, request) => {
         let list = schema.lists.find(request.params.id);
 
-        return list.reminders;
+        return list.banners;
       });
 
-      this.get("/api/reminders", (schema) => {
-        return schema.reminders.all();
+      this.get("/api/banners", (schema) => {
+        return schema.banners.all();
       });
 
-      this.post("/api/reminders", (schema, request) => {
+      this.post("/api/banners", (schema, request) => {
         let attrs = JSON.parse(request.requestBody);
 
-        return schema.reminders.create(attrs);
+        return schema.banners.create(attrs);
       });
 
       this.post("/api/lists", (schema, request) => {
@@ -96,17 +96,17 @@ export default function ({ environment = "development" } = {}) {
         return schema.lists.create(attrs);
       });
 
-      this.delete("/api/reminders/:id", (schema, request) => {
+      this.delete("/api/banners/:id", (schema, request) => {
         let id = request.params.id;
 
-        return schema.reminders.find(id).destroy();
+        return schema.banners.find(id).destroy();
       });
 
       this.delete("/api/lists/:id", (schema, request) => {
         let id = request.params.id;
         let list = schema.lists.find(id);
 
-        list.reminders.destroy();
+        list.banners.destroy();
 
         return list.destroy();
       });

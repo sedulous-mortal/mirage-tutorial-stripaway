@@ -10,7 +10,7 @@ export default function () {
   let location = useLocation();
   let { listId } = useParams();
 
-  let [reminders, setReminders] = useState(null);
+  let [banners, setBanners] = useState(null);
   let [lists, setLists] = useState();
   let [error, setError] = useState();
   let [isAddingReminder, setIsAddingReminder] = useState();
@@ -25,19 +25,19 @@ export default function () {
 
   useEffect(() => {
     let isCurrent = true;
-    setReminders(null);
-    let url = listId ? `/api/lists/${listId}/reminders` : `/api/reminders`;
+    setBanners(null);
+    let url = listId ? `/api/lists/${listId}/banners` : `/api/banners`;
 
     fetch(url)
       .then((res) => res.json())
       .then((json) => {
         if (isCurrent) {
-          setReminders(json.reminders);
+          setBanners(json.banners);
         }
       })
       .catch((e) => {
         if (isCurrent) {
-          setError("We couldn't load your reminders. Try again soon.");
+          setError("We couldn't load your banners. Try again soon.");
           console.error(e);
         }
       });
@@ -77,7 +77,7 @@ export default function () {
 
     setIsSavingReminder(true);
 
-    fetch("/api/reminders", {
+    fetch("/api/banners", {
       method: "POST",
       body: JSON.stringify({
         text: newReminderText,
@@ -87,7 +87,7 @@ export default function () {
       .then((res) => res.json())
       .then((json) => {
         setNewReminderText("");
-        setReminders((reminders) => [...reminders, json.reminder]);
+        setBanners((banners) => [...banners, json.reminder]);
         setIsAddingReminder(false);
       })
       .catch((e) => {
@@ -130,9 +130,9 @@ export default function () {
   }
 
   function deleteReminder(id) {
-    fetch(`/api/reminders/${id}`, { method: "DELETE" });
-    setReminders((reminders) =>
-      reminders.filter((reminder) => reminder.id !== id)
+    fetch(`/api/banners/${id}`, { method: "DELETE" });
+    setBanners((banners) =>
+      banners.filter((reminder) => reminder.id !== id)
     );
   }
 
@@ -142,14 +142,14 @@ export default function () {
     history.push(`/${location.search}`);
   }
 
-  let hasRenderedRemindersRef = useRef(false);
+  let hasRenderedBannersRef = useRef(false);
   useEffect(() => {
-    if (reminders) {
-      hasRenderedRemindersRef.current = true;
+    if (banners) {
+      hasRenderedBannersRef.current = true;
     } else {
-      hasRenderedRemindersRef.current = false;
+      hasRenderedBannersRef.current = false;
     }
-  }, [reminders]);
+  }, [banners]);
 
   return (
     <div className="flex justify-center">
@@ -265,7 +265,7 @@ export default function () {
                 className="flex items-center justify-between text-3xl font-bold leading-none"
                 data-testid="active-list-title"
               >
-                {activeList?.name || "Reminders"}
+                {activeList?.name || "Banners"}
               </h1>
 
               <button
@@ -316,11 +316,11 @@ export default function () {
                 </div>
               )}
 
-              {reminders?.length > 0 ? (
+              {banners?.length > 0 ? (
                 <div>
                   <ul className="divide-y divide-cool-gray-100">
                     <AnimatePresence>
-                      {reminders.map((reminder, i) => (
+                      {banners.map((reminder, i) => (
                         <motion.li
                           variants={{
                             hidden: (i) => ({
@@ -339,7 +339,7 @@ export default function () {
                             },
                           }}
                           initial={
-                            hasRenderedRemindersRef.current
+                            hasRenderedBannersRef.current
                               ? "visible"
                               : "hidden"
                           }
@@ -384,7 +384,7 @@ export default function () {
                     </AnimatePresence>
                   </ul>
                 </div>
-              ) : reminders ? (
+              ) : banners ? (
                 <p className="pt-3 pb-3 font-medium text-cool-gray-400">
                   All done!
                 </p>

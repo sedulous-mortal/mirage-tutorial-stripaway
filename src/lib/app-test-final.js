@@ -1,5 +1,5 @@
 /*
-  This is the final solution for Part 9 of the Tutorial that tests the Reminders app.
+  This is the final solution for Part 9 of the Tutorial that tests the Banners app.
 */
 import { visit } from "../lib/test-helpers";
 import { screen, waitForElementToBeRemoved } from "@testing-library/react";
@@ -16,7 +16,7 @@ afterEach(() => {
   server.shutdown();
 });
 
-test("it shows a message when there are no reminders", async () => {
+test("it shows a message when there are no banners", async () => {
   visit("/");
 
   await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
@@ -24,7 +24,7 @@ test("it shows a message when there are no reminders", async () => {
   expect(screen.getByText("All done!")).toBeInTheDocument();
 });
 
-test("it shows existing reminders", async () => {
+test("it shows existing banners", async () => {
   server.create("reminder", { text: "Walk the dog" });
   server.create("reminder", { text: "Take out the trash" });
   server.create("reminder", { text: "Work out" });
@@ -37,7 +37,7 @@ test("it shows existing reminders", async () => {
   expect(screen.getByText("Work out")).toBeInTheDocument();
 });
 
-test("the all screen shows tags for associated reminders", async () => {
+test("the all screen shows tags for associated banners", async () => {
   server.create("reminder", { text: "Unassociated reminder" });
 
   let list = server.create("list", { name: "List 1" });
@@ -63,7 +63,7 @@ test("it can delete a reminder", async () => {
   userEvent.click(screen.getByTestId("delete-reminder"));
 
   expect(screen.queryByText("Work out")).not.toBeInTheDocument();
-  expect(server.db.reminders.length).toEqual(0);
+  expect(server.db.banners.length).toEqual(0);
 });
 
 test("it can create a list", async () => {
@@ -82,13 +82,13 @@ test("it can create a list", async () => {
   expect(server.db.lists.length).toEqual(1);
 });
 
-test("a list shows reminders for only that list", async () => {
+test("a list shows banners for only that list", async () => {
   // Unassociated reminder
   server.create("reminder");
 
-  // List with 3 associated reminders
+  // List with 3 associated banners
   let list = server.create("list", {
-    reminders: server.createList("reminder", 3),
+    banners: server.createList("reminder", 3),
   });
 
   visit(`/${list.id}?open`);
@@ -112,17 +112,17 @@ test("it can add a reminder to a list", async () => {
   );
 
   expect(screen.getByText("Work out")).toBeInTheDocument();
-  expect(server.db.reminders.length).toEqual(1);
-  expect(server.db.reminders[0].listId).toEqual(list.id);
+  expect(server.db.banners.length).toEqual(1);
+  expect(server.db.banners[0].listId).toEqual(list.id);
 });
 
 test("it can delete a list", async () => {
   // One unassociated Reminder
   server.create("reminder");
 
-  // A List with three associated Reminders
+  // A List with three associated Banners
   let list = server.create("list", {
-    reminders: server.createList("reminder", 3),
+    banners: server.createList("reminder", 3),
   });
   visit(`/${list.id}?open`);
   await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
@@ -132,9 +132,9 @@ test("it can delete a list", async () => {
   await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
 
   expect(screen.getByTestId("active-list-title")).toHaveTextContent(
-    "Reminders"
+    "Banners"
   );
   expect(screen.getAllByTestId("reminder").length).toEqual(1);
   expect(server.db.lists.length).toEqual(0);
-  expect(server.db.reminders.length).toEqual(1); // The associated reminders should have been destroyed
+  expect(server.db.banners.length).toEqual(1); // The associated banners should have been destroyed
 });
