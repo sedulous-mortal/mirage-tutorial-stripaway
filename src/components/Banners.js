@@ -1,13 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "./UI";
-import { useParams, useLocation, useHistory } from "react-router-dom";
-import { useQueryParam } from "use-query-params";
-import { BooleanParam } from "../lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function () {
-  let history = useHistory();
-  let location = useLocation();
 
   let [banners, setBanners] = useState(null);
   let [error, setError] = useState();
@@ -18,6 +12,7 @@ export default function () {
   useEffect(() => {
     let isCurrent = true;
     setBanners(null);
+    let url = "/api/banners";
 
     fetch(url)
       .then((res) => res.json())
@@ -36,7 +31,7 @@ export default function () {
     return () => {
       isCurrent = false;
     };
-  });
+  }, []);
 
   function createBanner(e) {
     e.preventDefault();
@@ -90,7 +85,6 @@ export default function () {
 
         <div className="flex flex-1 bg-white w-md">
           
-
           <div className="flex-1 pt-12 pb-12 pr-12">
             <div className="flex items-center justify-between mb-10">
               <h1
@@ -178,7 +172,7 @@ export default function () {
                           exit="removed"
                           custom={i}
                           className="flex items-center justify-between py-2 group"
-                          key={banner.id}
+                          key={i}
                           data-testid="banner"
                         >
                           <div>

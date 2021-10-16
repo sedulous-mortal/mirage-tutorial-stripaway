@@ -35,9 +35,10 @@ export default function () {
     routes() {
         // base code had this.namespace set as 'api/banners', 
         //but when I use that it ironically asks me in console if I forgot to declare namespace...
-        
+
       this.get("/api/banners", () => ({
         banners: [{
+            id: 1,
             bannerColor: 'blue',
             bannerLink: 'https://codespark.com',
             bannerText: 'This is an awesome banner',
@@ -46,6 +47,7 @@ export default function () {
             endDate: '2021-01-31T19:16:00.000Z'
             },
             {
+            id: 2,
             bannerColor: 'orange',
             bannerLink: 'https://codespark.com',
             bannerText: 'This is another awesome banner',
@@ -54,6 +56,7 @@ export default function () {
             endDate: '2021-02-07T20:14:00.000Z'
             },
             {
+            id: 3,
             bannerColor: 'red',
             bannerLink: 'https://codespark.com',
             bannerText: 'This is the awesome banner',
