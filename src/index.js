@@ -11,7 +11,9 @@ if (
   process.env.NODE_ENV === "development" &&
   typeof makeServer === "function"
 ) {
-  makeServer(); // For people following the tutorial
+  // I don't need makeServer({ environment: 'development' });
+  // because we defaulted makeServer to have development in our server file
+  makeServer(); 
 } else if (
   process.env.NODE_ENV === "production" ||
   process.env.REACT_APP_DEMO

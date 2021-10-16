@@ -85,7 +85,7 @@ export default function () {
 
         <div className="flex flex-1 bg-white w-md">
           
-          <div className="flex-1 pt-12 pb-12 pr-12">
+          <div className="flex-1 pt-12 pb-12 pr-12 pl-12">
             <div className="flex items-center justify-between mb-10">
               <h1
                 className="flex items-center justify-between text-3xl font-bold leading-none"
