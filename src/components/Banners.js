@@ -64,7 +64,7 @@ export default function () {
   }
 
   function updateBanner(id){
-    
+    console.log('attempting to update banner')
     setIsSavingBanner(true);
 
     fetch(`/api/banners/${id}`, {
@@ -72,19 +72,28 @@ export default function () {
        })
       .then((res) => res.json())
       .then((json) => {
-        setBanners((banners) => banners);
-        setIsAddingBanner(false);
+        console.log('attempting to update with', json)
       })
       .catch((e) => {
         setError("Your Banner wasn't saved. Try again.");
         console.error(e);
       })
-      .then(() => {
-        setIsSavingBanner(false);
-      })
+      
       .finally(() => {
         fetch("/api/banners", {
         method: "GET",
+        })
+        .then((res) => res.json())
+        .then((json) => {
+          console.log('freshly gotten banners', json)
+          setBanners((banners) => json.banners);
+        })
+        .catch((e) => {
+          setError("Your Banner was saved but we couldn't get the updated banners");
+          console.error(e);
+        })
+        .finally(() => {
+          setIsSavingBanner(false);
         })
       });
   }

@@ -70,7 +70,8 @@ export default function (environment = 'development') {
         return bannerToUpdate.update({
         // this is stubbed out b/c I don't yet have a way to capture the input
             //bannerText: 'testUpdateTitle',
-            bannerColor: 'purple'
+            bannerColor: 'purple',
+            bannerText: 'updated'
         });
       })
 
