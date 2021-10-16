@@ -68,9 +68,13 @@ export default function () {
       // Being able to use the DevTools to help you write and debug route handlers right alongside your frontend code is a key part of what makes Mirage so productive. <- 100%
       // stick the word "debugger" into your POST function code (as usual in js) and you can look at what's going on in the chrome console before your post req goes through.
 
+      // this works on the premise that we know there are 3 existing banners, which is also unrealistic even with the incrementing of newId++
+
+      let newId = 4;
       this.post("/api/banners", (schema, request) => {
         let attrs = JSON.parse(request.requestBody)
-        attrs.id = 4
+        attrs.id = newId++
+
         return { banner: attrs }
       })
     },
