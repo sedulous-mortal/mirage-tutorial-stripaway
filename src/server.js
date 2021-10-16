@@ -1,14 +1,17 @@
 // Welcome to the tutorial!
-import { createServer } from "miragejs"
+import { createServer, Model } from "miragejs"
 
 export default function () {
   createServer({
+    models: {
+        banners: Model,
+    },
     routes() {
       this.get("/api/banners", () => ({
         banners: [
-            { id: 1, text: "Walk the dog" },
-            { id: 2, text: "Take out the trash" },
-            { id: 3, text: "Work out" },
+            { id: 1, bannerText: "Walk the dog" },
+            { id: 2, bannerText: "Take out the trash" },
+            { id: 3, bannerText: "Work out" },
           ],
       }))
     },

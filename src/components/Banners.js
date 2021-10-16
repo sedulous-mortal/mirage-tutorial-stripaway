@@ -13,11 +13,11 @@ export default function () {
   let [banners, setBanners] = useState(null);
   let [lists, setLists] = useState();
   let [error, setError] = useState();
-  let [isAddingReminder, setIsAddingReminder] = useState();
-  let [isSavingReminder, setIsSavingReminder] = useState();
+  let [isAddingBanner, setIsAddingBanner] = useState();
+  let [isSavingBanner, setIsSavingBanner] = useState();
   let [isAddingList, setIsAddingList] = useState();
   let [isSavingList, setIsSavingList] = useState();
-  let [newReminderText, setNewReminderText] = useState("");
+  let [newBannerText, setNewBannerText] = useState("");
   let [newListName, setNewListName] = useState("");
   let [sidebarIsOpen, setSidebarIsOpen] = useQueryParam("open", BooleanParam);
 
@@ -68,34 +68,34 @@ export default function () {
     };
   }, [sidebarIsOpen]);
 
-  function createReminder(e) {
+  function createBanner(e) {
     e.preventDefault();
 
-    if (!newReminderText) {
+    if (!newBannerText) {
       return;
     }
 
-    setIsSavingReminder(true);
+    setIsSavingBanner(true);
 
     fetch("/api/banners", {
       method: "POST",
       body: JSON.stringify({
-        text: newReminderText,
+        text: newBannerText,
         ...(listId && { listId }),
       }),
     })
       .then((res) => res.json())
       .then((json) => {
-        setNewReminderText("");
-        setBanners((banners) => [...banners, json.reminder]);
-        setIsAddingReminder(false);
+        setNewBannerText("");
+        setBanners((banners) => [...banners, json.banner]);
+        setIsAddingBanner(false);
       })
       .catch((e) => {
-        setError("Your Reminder wasn't saved. Try again.");
+        setError("Your Banner wasn't saved. Try again.");
         console.error(e);
       })
       .finally(() => {
-        setIsSavingReminder(false);
+        setIsSavingBanner(false);
       });
   }
 
@@ -129,10 +129,10 @@ export default function () {
       });
   }
 
-  function deleteReminder(id) {
+  function deleteBanner(id) {
     fetch(`/api/banners/${id}`, { method: "DELETE" });
     setBanners((banners) =>
-      banners.filter((reminder) => reminder.id !== id)
+      banners.filter((banner) => banner.id !== id)
     );
   }
 
@@ -269,8 +269,8 @@ export default function () {
               </h1>
 
               <button
-                data-testid="add-reminder"
-                onClick={() => setIsAddingReminder(!isAddingReminder)}
+                data-testid="add-banner"
+                onClick={() => setIsAddingBanner(!isAddingBanner)}
                 className="p-2 border border-transparent rounded hover:border-cool-gray-300 text-cool-gray-600"
               >
                 <svg
@@ -320,7 +320,7 @@ export default function () {
                 <div>
                   <ul className="divide-y divide-cool-gray-100">
                     <AnimatePresence>
-                      {banners.map((reminder, i) => (
+                      {banners.map((banner, i) => (
                         <motion.li
                           variants={{
                             hidden: (i) => ({
@@ -347,24 +347,24 @@ export default function () {
                           exit="removed"
                           custom={i}
                           className="flex items-center justify-between py-2 group"
-                          key={reminder.id}
-                          data-testid="reminder"
+                          key={banner.id}
+                          data-testid="banner"
                         >
                           <div>
-                            {reminder.text}
-                            {!listId && reminder.list && (
+                            {banner.bannerText}
+                            {!listId && banner.list && (
                               <span
                                 className="px-2 py-1 ml-3 text-xs font-medium rounded bg-cool-gray-100 text-cool-gray-600"
                                 data-testid="list-tag"
                               >
-                                {reminder.list.name}
+                                {banner.list.name}
                               </span>
                             )}
                           </div>
                           <button
                             className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
-                            onClick={() => deleteReminder(reminder.id)}
-                            data-testid="delete-reminder"
+                            onClick={() => deleteBanner(banner.id)}
+                            data-testid="delete-banner"
                           >
                             <svg
                               className="w-4 h-4"
@@ -394,11 +394,11 @@ export default function () {
                 </p>
               ) : null}
 
-              {isAddingReminder && (
+              {isAddingBanner && (
                 <form
-                  onSubmit={createReminder}
+                  onSubmit={createBanner}
                   className={`-mx-3 ${
-                    isSavingReminder ? "opacity-50 pointer-events-none" : ""
+                    isSavingBanner ? "opacity-50 pointer-events-none" : ""
                   }`}
                 >
                   <div>
@@ -407,15 +407,15 @@ export default function () {
                         id="email"
                         autoFocus
                         className="block w-full py-2 transition duration-150 ease-in-out border-2 border-transparent focus form-input focus:shadow-none focus:border-blue-300 sm:leading-5"
-                        placeholder="New reminder..."
-                        data-testid="new-reminder-text"
-                        value={newReminderText}
-                        onChange={(e) => setNewReminderText(e.target.value)}
+                        placeholder="New banner..."
+                        data-testid="new-banner-text"
+                        value={newBannerText}
+                        onChange={(e) => setNewBannerText(e.target.value)}
                       />
                       <div className="absolute inset-y-0 right-0 flex py-1">
                         <button
                           type="submit"
-                          data-testid="save-new-reminder"
+                          data-testid="save-new-banner"
                           className="items-center px-4 text-sm text-cool-gray-700 hover:text-cool-gray-400"
                         >
                           <svg
