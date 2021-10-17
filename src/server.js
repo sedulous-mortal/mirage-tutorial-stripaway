@@ -28,7 +28,7 @@ export default function (environment = 'development') {
           bannerColor: '#FFF',
           bannerLink: '',
           bannerText: 'This is the white banner',
-          bannerIcon: '',
+          bannerIcon: 'https://cdn3.iconfinder.com/data/icons/object-emoji/50/Celebration-512.png',
           startDate: '2021-03-01T19:04:00.000Z',
           endDate: '2021-03-05T19:04:00.000Z'
         });
