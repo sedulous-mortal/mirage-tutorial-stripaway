@@ -12,6 +12,11 @@ export default function () {
   let [isEditingBanner, setIsEditingBanner] = useState();
   let [bannerToEdit, setBannerToEdit] = useState({});
 
+
+  let listItemDetailStyle = {
+    flex: 1,
+  }
+
   useEffect(() => {
     let isCurrent = true;
     setBanners(null);
@@ -66,7 +71,8 @@ export default function () {
       });
   }
 
-  function updateBanner(id){
+  function updateBanner(banner){
+    let id = banner.id
     console.log('attempting to update banner')
     setIsSavingBanner(true);
 
@@ -101,30 +107,21 @@ export default function () {
       });
   }
 
-  function launchUpdateModal(bannerId){
+  function launchUpdateModal(bannerToEdit){
+    let bannerId = bannerToEdit.id
     console.log('launching modal')
-    setIsEditingBanner(true)
     fetch(`/api/banners/${bannerId}`, {
       method: "GET",
       }).then((res) => res.json())
       .then((json) => {
         console.log('you clicked to edit this banner', json)
         setBannerToEdit(json.banner);
+        setIsEditingBanner(true)
       })
       .catch((e) => {
         setError("Your Banner was saved but we couldn't get the updated banners");
         console.error(e);
       })
-    updateBanner(bannerId)
-    // style to add to modal
-    // position: fixed;
-    // left: 0;
-    // top: 0;
-    // width: 100%;
-    // height: 100%;
-    // overflow: auto;
-    // background-color: rgb(0,0,0);
-    // background-color: rgba(0,0,0,0.4);
   }
 
   function deleteBanner(id) {
@@ -146,7 +143,7 @@ export default function () {
   return (
     <div className="flex justify-center">
       <div className="flex mx-auto overflow-hidden rounded-md shadow-lg">          
-        <div className="flex flex-1 bg-white w-md">
+        <div className="flex flex-1" style={{border: '2px solid black'}}>
           <div className="flex-1 pt-12 pb-12 pr-12 pl-12">
             <div className="flex items-center justify-between mb-10">
               <h1 className="flex items-center justify-between text-3xl font-bold leading-none">
@@ -231,34 +228,29 @@ export default function () {
                           animate="visible"
                           exit="removed"
                           custom={i}
-                          className="flex items-center justify-between py-2 group"
+                          className="flex column items-center justify-between py-2 group"
                           key={i}
                           data-testid="banner"
                         >
-                          <div>
-                            {banner.bannerText}
-                          </div>
-                          
                           <button
-                            className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
-                            onClick={() => launchUpdateModal(banner.id)}
+                            className="flex items-center px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
+                            onClick={() => launchUpdateModal(banner)}
                             data-testid="update-banner"
                           >
-                            <svg
-                              className="w-4 h-4"
-                              fill="red"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clipRule="evenodd"
-                                fillRule="evenodd"
-                              ></path>
-                            </svg>
+                            <svg xmlns = "http://www.w3.org/2000/svg"
+                            width = "16"
+                            height = "16"
+                            fill = "currentColor"
+                            className = "bi bi-pencil-square"
+                            viewBox = "0 0 16 16" >
+                              <path d = "M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                              <path fillRule = "evenodd"
+                            d = "M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                              </svg>
                             ️
                           </button>
                           <button
-                            className="flex items-center invisible px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
+                            className="flex items-center px-2 py-1 opacity-50 hover:opacity-100 group-hover:visible"
                             onClick={() => deleteBanner(banner.id)}
                             data-testid="delete-banner"
                           >
@@ -275,6 +267,27 @@ export default function () {
                             </svg>
                             ️
                           </button>
+
+                          <div style={listItemDetailStyle}>
+                            {banner.bannerText}
+                          </div>
+                          
+                          <div style={listItemDetailStyle}>
+                            {banner.bannerColor}
+                          </div>
+
+                          <div style={listItemDetailStyle}>
+                            {/* {let width = window.visualViewport.width >= 1058 ? '30%' : '50px'} */}
+                            <img src={banner.bannerIcon} width={'30%'}></img>
+                          </div>
+
+                          <div style={listItemDetailStyle}>
+                            {banner.startDate}
+                          </div>
+
+                          <div style={listItemDetailStyle}>
+                            {banner.endDate}
+                          </div>
                         </motion.li>
                       ))}
                     </AnimatePresence>
@@ -292,18 +305,7 @@ export default function () {
               ) : null}
 
               {isEditingBanner && ( 
-                <EditModal />) 
-                // <EditModal banner={
-                //                 {
-                //                   bannerColor: 'red',
-                //                   bannerLink: 'https://codespark.com',
-                //                   bannerText: 'This is the awesome banner',
-                //                   bannerIcon: '',
-                //                   startDate: '2021-03-01T19:04:00.000Z',
-                //                   endDate: '2021-03-05T19:04:00.000Z'
-                //                 }
-                //               }
-                // />) 
+                <EditModal onSubmit={updateBanner.bind(this)}/>)  
               }
 
               {isAddingBanner && (

@@ -45,6 +45,12 @@ export default function (environment = 'development') {
         return schema.banners.all()
       })
 
+      // get by id
+      this.get("/api/banners/:id", (schema, request) => {
+        let id = request.params.id
+        return schema.banners.find(id)
+      })
+
       // Here we're getting the attrs from the request just like before, but now we're using the create method from our schema (which is how we interact with Mirage's data layer) to create new banner models.
       // Mirage also auto-assigns auto-incrementing id values to our new posts
       this.post("/api/banners", (schema, request) => {
