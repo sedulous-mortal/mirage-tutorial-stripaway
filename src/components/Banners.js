@@ -11,7 +11,7 @@ export default function () {
   let [isSavingBanner, setIsSavingBanner] = useState();
   let [newBannerText, setNewBannerText] = useState("");
   let [isEditingBanner, setIsEditingBanner] = useState();
-  let [bannerToEdit, setBannerToEdit] = useState({});
+  let [bannerToEdit, setBannerToEdit] = useState();
 
   let headerLabelsStyle = {
     display: 'flex',
@@ -76,7 +76,9 @@ export default function () {
       });
   }
 
-  function updateBanner(banner){
+  function updateBanner(e, banner){
+    e.preventDefault();
+    setIsEditingBanner(false)
     let id = banner.id
     console.log('attempting to update banner')
     setIsSavingBanner(true);
@@ -100,7 +102,8 @@ export default function () {
         .then((res) => res.json())
         .then((json) => {
           console.log('freshly gotten banners', json)
-          setBanners((banners) => json.banners);
+          // was setBanners(banners)=>json.banners
+          setBanners(json.banners);
         })
         .catch((e) => {
           setError("Your Banner was saved but we couldn't get the updated banners");
@@ -112,16 +115,23 @@ export default function () {
       });
   }
 
-  function launchUpdateModal(bannerToEdit){
-    let bannerId = bannerToEdit.id
+  function launchUpdateModal(clickedBannerToEdit){
+    let bannerId = clickedBannerToEdit.id
     console.log('launching modal')
     fetch(`/api/banners/${bannerId}`, {
       method: "GET",
       }).then((res) => res.json())
       .then((json) => {
         console.log('you clicked to edit this banner', json)
+        console.log('setting it to', json.banner)
         setBannerToEdit(json.banner);
+      }).then((mystery) => {
+        console.log('inside mystery', bannerToEdit)
+        if(bannerToEdit==clickedBannerToEdit){
+          console.log('match')
+        } else console.log('no match')
         setIsEditingBanner(true)
+        console.log('what modal should pick up from Banners state', bannerToEdit)
       })
       .catch((e) => {
         setError("Your Banner was saved but we couldn't get the updated banners");
@@ -148,7 +158,7 @@ export default function () {
   return (
     <div className="flex justify-center">
       <div className="flex mx-auto overflow-hidden rounded-md shadow-lg">          
-        <div className="flex flex-1" style={{border: '2px solid black'}}>
+        <div className="flex flex-1" style={{border: '2px solid black', width: '90vw'}}>
           <div className="flex-1 pt-12 pb-12 pr-12 pl-12">
             <div className="flex items-center justify-between mb-10">
               <h1 className="flex items-center justify-between text-3xl font-bold leading-none">
@@ -177,12 +187,12 @@ export default function () {
             <div style={{flexFlow: 'column wrap'}}>
               <div style={headerLabelsStyle}>
                 <span style={{flex: 2}}>Action</span>
-                <span style={{flex: 3}}>Headline</span>
-                <span style={{flex: 2}}>Link</span>
+                <span style={{flex: 2}}>Headline</span>
+                <span style={{flex: 1}}>Link</span>
                 <span style={{flex: 1}}>BG Color</span>
                 <span style={{flex: 1}}>Icon</span>
-                <span style={{flex: 2}}>Start Date</span>
-                <span style={{flex: 2}}>End Date</span>
+                <span style={{flex: 1}}>Start Date</span>
+                <span style={{flex: 1}}>End Date</span>
               </div>
             </div>
 
@@ -332,7 +342,7 @@ export default function () {
               ) : null}
 
               {isEditingBanner && ( 
-                <EditModal onSubmit={updateBanner.bind(this)}/>)  
+                <EditModal onSubmit={updateBanner} bannerToEdit={bannerToEdit}/>)  
               }
 
               {isAddingBanner && (

@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-// I want this component to manage its own state
+import { render } from "@testing-library/react";
+import React, { Component, useState } from "react";
+// I would ideally want this component to manage its own state
 // such as all the form data that it has to submit
 
-const EditModal = () => {
-    const [bannerToEdit, setBannerToEdit] = useState({})  
-
-    let updateModalStyle={
+class EditModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          bannerToEdit: {},
+        };
+      
+    // const [bannerToEdit, setBannerToEdit] = useState({})  
+    
+    this.updateModalStyle={
                   position: 'fixed',
                   padding: '20vh 20vw',
                   left: 0,
@@ -16,16 +23,16 @@ const EditModal = () => {
                   backgroundColor:'rgba(0,0,0,0.4)'
                 }
 
-    let updateContentContainerStyle = {
+    this.updateContentContainerStyle = {
         backgroundColor: '#DDD',
         padding: '2vh 1vw'
     }
 
-    let formContent = {
+    this.formContent = {
         bannerText: 'tadah'
     }
 
-    let editFormStyle = {
+    this.editFormStyle = {
         display: 'flex',
         flexFlow: 'column nowrap',
         alignItems: 'center',
@@ -37,37 +44,44 @@ const EditModal = () => {
         e.persist();
         console.log(e)
         if(this && this.props){
-            this.props.onSubmit(formContent)
+            this.props.onSubmit(this.formContent)
         }  
     }
-
+}
+render(){
+    console.log(this.props.bannerToEdit)
     return (
         <div>
-            <div className="update-modal" style={updateModalStyle}>
-                <div className="update-content-container" style={updateContentContainerStyle}>
+            <div className="update-modal" style={this.updateModalStyle}>
+                <div className="update-content-container" style={this.updateContentContainerStyle}>
                 
                     {/* it tells me onClick is getting a string instead of a callback...? */}
                     {/* <span className="exit-button" onClick={document.getElementsByClassName('update-modal')[0] ? document.getElementsByClassName('update-modal')[0].style.display='none' : console.log('fail')}></span> */}
-                    <p>{bannerToEdit.bannerText}</p>
+                    
                     {/* need to stop the page refresh */}
-                    <form className="edit-form" style={editFormStyle}>
+                    <form className="edit-form" style={this.editFormStyle}>
                     <p>
                     <label>Banner Text</label>
-                    <input type="text" id="bannerText" name="bannerText" value={bannerToEdit.bannerText} />
+                    <input type="text" id="bannerText" name="bannerText" defaultValue={this.props.bannerToEdit.bannerText} />
                     </p>
                     <p>
                     <label>Banner Link</label>
-                    <input type="text" id="bannerLink" name="bannerLink" value={bannerToEdit.bannerLink} />
+                    <input type="text" id="bannerLink" name="bannerLink" defaultValue={this.props.bannerToEdit.bannerLink} />
                     </p>
                     <p>
                     <label>Banner Color</label>
-                    <input type="text" id="bannerColor" name="bannerColor" value={bannerToEdit.bannerColor} />
+                    <input type="text" id="bannerColor" name="bannerColor" defaultValue={this.props.bannerToEdit.bannerColor} />
                     </p>
-                    <p>Current Icon</p>
-                    <img src={bannerToEdit.bannerIcon} width='3vw'/>
+                    <span style={{display: 'flex'}}>
+                        <p>Current Icon</p>
+                        {this.props.bannerToEdit.bannerIcon? 
+                        <img src={this.props.bannerToEdit.bannerIcon} width='3vw'/> :
+                        <div width="10vw">No Icons</div>
+                        }
+                    </span>
                     
                     <br />
-                    <button onClick={handleSubmitClick}>SUBMIT</button>
+                    <button onClick={this.handleSubmitClick}>SUBMIT</button>
                     
                     </form>
              
@@ -76,4 +90,6 @@ const EditModal = () => {
         </div>
     )
 }
+}
+
 export default EditModal;
