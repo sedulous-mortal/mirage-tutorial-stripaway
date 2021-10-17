@@ -7,7 +7,7 @@ class EditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          bannerToEdit: {},
+          
         };
       
     // const [bannerToEdit, setBannerToEdit] = useState({})  
@@ -29,7 +29,7 @@ class EditModal extends Component {
     }
 
     this.formContent = {
-        bannerText: 'tadah'
+        ...this.props.bannerToEdit
     }
 
     this.editFormStyle = {
@@ -39,17 +39,22 @@ class EditModal extends Component {
         justifyContent: 'center'
     }
 
-    let handleSubmitClick = (e) => {
+    this.handleChange = (e) => {
+        console.log(e.target.value, ' updated')
+        this.formContent[e.target.name] = e.target.value;
+        console.log(this.formContent, 'updated FormContent')
+      }
+
+    this.handleSubmitClick = (e) => {
         e.preventDefault();
-        e.persist();
-        console.log(e)
-        if(this && this.props){
+        console.log(this.formContent)
+        if(this && this.props && this.formContent){
+            console.log('sending her out')
             this.props.onSubmit(this.formContent)
         }  
     }
 }
 render(){
-    console.log(this.props.bannerToEdit)
     return (
         <div>
             <div className="update-modal" style={this.updateModalStyle}>
@@ -62,15 +67,18 @@ render(){
                     <form className="edit-form" style={this.editFormStyle}>
                     <p>
                     <label>Banner Text</label>
-                    <input type="text" id="bannerText" name="bannerText" defaultValue={this.props.bannerToEdit.bannerText} />
+                    <input type="text" id="bannerText" name="bannerText" 
+                    onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerText} />
                     </p>
                     <p>
                     <label>Banner Link</label>
-                    <input type="text" id="bannerLink" name="bannerLink" defaultValue={this.props.bannerToEdit.bannerLink} />
+                    <input type="text" id="bannerLink" name="bannerLink" 
+                    onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerLink} />
                     </p>
                     <p>
                     <label>Banner Color</label>
-                    <input type="text" id="bannerColor" name="bannerColor" defaultValue={this.props.bannerToEdit.bannerColor} />
+                    <input type="text" id="bannerColor" name="bannerColor" 
+                    onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerColor} />
                     </p>
                     <span style={{display: 'flex'}}>
                         <p>Current Icon</p>
@@ -78,8 +86,9 @@ render(){
                         <img src={this.props.bannerToEdit.bannerIcon} width='3vw'/> :
                         <div width="10vw">No Icons</div>
                         }
+                        {/* <div onChange={this.handleChange}>Upload New Icon?</div> */}
                     </span>
-                    
+
                     <br />
                     <button onClick={this.handleSubmitClick}>SUBMIT</button>
                     

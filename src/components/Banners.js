@@ -76,16 +76,17 @@ export default function () {
       });
   }
 
-  function updateBanner(e, banner){
-    e.preventDefault();
+  function updateBanner(banner){
     setIsEditingBanner(false)
+    console.log(banner, 'has banner id ', banner.id)
     let id = banner.id
     console.log('attempting to update banner')
     setIsSavingBanner(true);
 
     fetch(`/api/banners/${id}`, {
-       method: "PATCH"
-       })
+       method: "PATCH",
+       body: JSON.stringify(banner)
+      })
       .then((res) => res.json())
       .then((json) => {
         console.log('attempting to update with', json)
@@ -125,13 +126,7 @@ export default function () {
         console.log('you clicked to edit this banner', json)
         console.log('setting it to', json.banner)
         setBannerToEdit(json.banner);
-      }).then((mystery) => {
-        console.log('inside mystery', bannerToEdit)
-        if(bannerToEdit==clickedBannerToEdit){
-          console.log('match')
-        } else console.log('no match')
         setIsEditingBanner(true)
-        console.log('what modal should pick up from Banners state', bannerToEdit)
       })
       .catch((e) => {
         setError("Your Banner was saved but we couldn't get the updated banners");

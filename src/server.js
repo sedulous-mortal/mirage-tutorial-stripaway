@@ -69,16 +69,19 @@ export default function (environment = 'development') {
         return schema.banners.find(id).destroy()
       })
 
-      // I didn't find very robust documentation in Mirage API on how to do an update to a Banner,
-      // so I used what I saw and may need to daisy chain a few methods
+      // I didn't find very robust documentation in Mirage API on how to do an update
       this.patch("/api/banners/:id", (schema, request) => {
+        console.log('patching in', request)
         let bannerToUpdate = schema.banners.find(request.params.id);
-        return bannerToUpdate.update({
-        // this is stubbed out b/c I don't yet have a way to capture the input
-            //bannerText: 'testUpdateTitle',
-            bannerColor: request.params.bannerColor,
-            bannerText: 'updated'
-        });
+        let newAttrs = JSON.parse(request.requestBody);
+
+        return bannerToUpdate.update(newAttrs
+            // {bannerColor: request.requestBody.bannerColor ? request.requestBody.bannerColor : bannerToUpdate.bannerColor,
+            // bannerText: request.requestBody.bannerText ? request.requestBody.bannerText : bannerToUpdate.bannerText,
+            // bannerIcon: request.requestBody.bannerIcon ? request.requestBody.bannerIcon : bannerToUpdate.bannerIcon,
+            // startDate: request.requestBody.startDate ? request.requestBody.startDate : bannerToUpdate.startDate,
+            // endDate: request.requestBody.endDate ? request.requestBody.endDate : bannerToUpdate.endDate,}
+        );
       })
 
       // I am not using lists of banners in this demo, but it's cool that Serializers leverage Mirage's data layer to help you mock complex API responses.
