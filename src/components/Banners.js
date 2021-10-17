@@ -103,7 +103,6 @@ export default function () {
         .then((res) => res.json())
         .then((json) => {
           console.log('freshly gotten banners', json)
-          // was setBanners(banners)=>json.banners
           setBanners(json.banners);
         })
         .catch((e) => {
@@ -118,7 +117,11 @@ export default function () {
 
   function launchUpdateModal(clickedBannerToEdit){
     let bannerId = clickedBannerToEdit.id
-    console.log('launching modal')
+    // this is here to trigger a check for the render method, 
+    // if it's true and I set ti to true again 10 lines below here,
+    // the render method doesn't care and my modal won't pop
+    setIsEditingBanner(false)
+    console.log('launching modal, isEditingBanner is currently ', isEditingBanner)
     fetch(`/api/banners/${bannerId}`, {
       method: "GET",
       }).then((res) => res.json())

@@ -75,13 +75,7 @@ export default function (environment = 'development') {
         let bannerToUpdate = schema.banners.find(request.params.id);
         let newAttrs = JSON.parse(request.requestBody);
 
-        return bannerToUpdate.update(newAttrs
-            // {bannerColor: request.requestBody.bannerColor ? request.requestBody.bannerColor : bannerToUpdate.bannerColor,
-            // bannerText: request.requestBody.bannerText ? request.requestBody.bannerText : bannerToUpdate.bannerText,
-            // bannerIcon: request.requestBody.bannerIcon ? request.requestBody.bannerIcon : bannerToUpdate.bannerIcon,
-            // startDate: request.requestBody.startDate ? request.requestBody.startDate : bannerToUpdate.startDate,
-            // endDate: request.requestBody.endDate ? request.requestBody.endDate : bannerToUpdate.endDate,}
-        );
+        return bannerToUpdate.update(newAttrs);
       })
 
       // I am not using lists of banners in this demo, but it's cool that Serializers leverage Mirage's data layer to help you mock complex API responses.
