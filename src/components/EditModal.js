@@ -53,32 +53,49 @@ class EditModal extends Component {
                         
                         <form className="edit-form" style={this.editFormStyle}>
                         <p>
-                        <label>Banner Text</label>
+                        <label style={{marginRight: '2vw'}}>Banner Text</label>
                         <input type="text" id="bannerText" name="bannerText" 
-                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerText} />
+                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerText} style={{paddingLeft: '2vw', width: '25vw'}}/>
                         </p>
+
                         <p>
-                        <label>Banner Link</label>
+                        <label style={{marginRight: '2vw'}}>Banner Link</label>
                         <input type="text" id="bannerLink" name="bannerLink" 
-                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerLink} />
+                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerLink} style={{paddingLeft: '2vw', width: '25vw'}} />
                         </p>
+
                         <p>
-                        <label>Banner Color</label>
-                        <input type="text" id="bannerColor" name="bannerColor" 
+                        <label style={{marginRight: '2vw'}}>Banner Color</label>
+                        
+                        <input style={{paddingLeft: '2vw', width: '25vw'}} type="text" id="bannerColor" name="bannerColor" 
                         onChange={this.handleChange} defaultValue={this.props.bannerToEdit.bannerColor} />
                         </p>
+
                         <span style={{display: 'flex'}}>
-                            <p>Current Icon</p>
+                            <p style={{paddingLeft: '2vw', paddingRight: '2vw'}}>Current Icon</p>
                             {this.props.bannerToEdit.bannerIcon? 
-                            <img src={this.props.bannerToEdit.bannerIcon} width='3vw'/> :
-                            <div width="10vw">No Icons</div>
+                            <img src={this.props.bannerToEdit.bannerIcon} width='20%'/> :
+                            <div width="100px">No Icons</div>
                             }
                             {/* <div onChange={this.handleChange}>Upload New Icon?</div> */}
                         </span>
 
+                        <p>
+                        <label style={{marginRight: '2vw'}}>Start Date</label>
+                        <input style={{paddingLeft: '2vw', width: '25vw'}} type="text" id="startDate" name="startDate" 
+                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.startDate} />
+                        </p>
+                        
+                        <p>
+                        <label style={{marginRight: '2vw'}}>End Date</label>
+                        <input style={{paddingLeft: '2vw', width: '25vw'}} type="text" id="endDate" name="endDate" 
+                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.endDate} />
+                        </p>
+
                         <br />
                         <button onClick={this.handleSubmitClick}>SUBMIT</button>
                         </form>
+                        
                     </div>
                 </div>
             </div>
