@@ -117,6 +117,7 @@ export default function () {
 
   function launchUpdateModal(clickedBannerToEdit){
     let bannerId = clickedBannerToEdit.id
+    setIsAddingBanner(false)
     // this is here to trigger a check for the render method, 
     // if it's true and I set ti to true again 10 lines below here,
     // the render method doesn't care and my modal won't pop
