@@ -9,7 +9,7 @@ export default function (environment = 'development') {
     environment,
     seeds(server) {
         server.create('banner', {
-          bannerColor: 'blue',
+          bannerColor: 'rgb(210, 227, 252)',
           bannerLink: 'https://codespark.com',
           bannerText: 'This is an awesome banner',
           bannerIcon: 'https://thefoos-com2.s3.amazonaws.com/flagship/icon_desktop.png',
@@ -19,15 +19,15 @@ export default function (environment = 'development') {
         server.create('banner', {
           bannerColor: 'orange',
           bannerLink: 'https://codespark.com',
-          bannerText: 'This is another awesome banner',
+          bannerText: 'This is an orange banner',
           bannerIcon: '',
           startDate: '2021-02-01T20:14:00.000Z',
           endDate: '2021-02-07T20:14:00.000Z'
         });
         server.create('banner', {
-          bannerColor: 'red',
-          bannerLink: 'https://codespark.com',
-          bannerText: 'This is the awesome banner',
+          bannerColor: '#FFF',
+          bannerLink: '',
+          bannerText: 'This is the white banner',
           bannerIcon: '',
           startDate: '2021-03-01T19:04:00.000Z',
           endDate: '2021-03-05T19:04:00.000Z'
@@ -76,7 +76,7 @@ export default function (environment = 'development') {
         return bannerToUpdate.update({
         // this is stubbed out b/c I don't yet have a way to capture the input
             //bannerText: 'testUpdateTitle',
-            bannerColor: 'purple',
+            bannerColor: request.params.bannerColor,
             bannerText: 'updated'
         });
       })

@@ -32,14 +32,17 @@ const EditModal = () => {
         justifyContent: 'center'
     }
 
+    let handleSubmitClick = (e) => {
+        e.preventDefault();
+        e.persist();
+        console.log(e)
+        if(this && this.props){
+            this.props.onSubmit(formContent)
+        }  
+    }
+
     return (
         <div>
-            <button onClick={() => {
-                document.getElementsByClassName('update-modal')[0] ?
-                 document.getElementsByClassName('update-modal')[0].style.display='block' :
-                  console.log('fail')}
-                  }>Open Modal</button>
-
             <div className="update-modal" style={updateModalStyle}>
                 <div className="update-content-container" style={updateContentContainerStyle}>
                 
@@ -64,7 +67,7 @@ const EditModal = () => {
                     <img src={bannerToEdit.bannerIcon} width='3vw'/>
                     
                     <br />
-                    <button onClick={this && this.props ? this.props.onSubmit(formContent) : null}>SUBMIT</button>
+                    <button onClick={handleSubmitClick}>SUBMIT</button>
                     
                     </form>
              
