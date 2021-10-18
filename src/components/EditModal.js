@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { Component, useState } from "react";
 
 class EditModal extends Component {
@@ -101,13 +102,13 @@ class EditModal extends Component {
                         <p>
                         <label style={{marginRight: '2vw'}}>Start Date</label>
                         <input style={{marginBottom: '2vh', paddingLeft: '2vw', width: '25vw'}} type="text" id="startDate" name="startDate" 
-                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.startDate} />
+                        onChange={this.handleChange} defaultValue={moment(this.props.bannerToEdit.startDate).calendar()} />
                         </p>
 
                         <p>
                         <label style={{marginRight: '2vw'}}>End Date</label>
                         <input style={{marginBottom: '2vh', paddingLeft: '2vw', width: '25vw'}} type="text" id="endDate" name="endDate" 
-                        onChange={this.handleChange} defaultValue={this.props.bannerToEdit.endDate} />
+                        onChange={this.handleChange} defaultValue={moment(this.props.bannerToEdit.endDate).calendar()} />
                         </p>
 
                         <br />

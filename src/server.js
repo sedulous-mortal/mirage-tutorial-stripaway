@@ -1,5 +1,6 @@
 // Welcome to the tutorial!
 import { createServer, Model } from "miragejs"
+import moment from "moment";
 
 export default function (environment = 'development') {
   return createServer({
@@ -72,9 +73,21 @@ export default function (environment = 'development') {
       // I didn't find very robust documentation in Mirage API on how to do an update
       this.patch("/api/banners/:id", (schema, request) => {
         console.log('patching in', request)
+        
         let bannerToUpdate = schema.banners.find(request.params.id);
         let newAttrs = JSON.parse(request.requestBody);
-
+        if(newAttrs.startDate.includes('/')){
+            let reqStartDate = newAttrs.startDate
+            //the user may have input a date as MM/DD/YYYY 
+            newAttrs.startDate = moment(newAttrs.startDate, 'MM/DD/YYYY').utc()
+            console.log('reformatted ', reqStartDate, ' to ', newAttrs.startDate)
+        }
+        if(newAttrs.endDate.includes('/')){
+            let reqEndDate = newAttrs.endDate
+            //the user may have input a date as MM/DD/YYYY 
+            newAttrs.endDate = moment(newAttrs.endDate, 'MM/DD/YYYY').utc()
+            console.log('reformatted ', reqEndDate, ' to ', newAttrs.endDate)
+        }
         return bannerToUpdate.update(newAttrs);
       })
 
